@@ -25,8 +25,15 @@
 // Or if property = 'age' -> [40, 26, 22, 28, 23, 45, 21, ...]
 
 const getAllValuesForProperty = (data, property) => {
-	return []
+    // Extract values for the specified property from each record and flatten the array
+    const values = data.map(record => record.fields[property]).filter(value => value !== undefined);
+
+    // Return the array of values
+    return values;
 }
+
+
+
 
 // 2 -------------------------------------------------------------
 // Return an array where a given property matches the given value
@@ -36,7 +43,7 @@ const getAllValuesForProperty = (data, property) => {
 // that patch the property and value. 
 
 const filterByProperty = (data, property, value) => {
-	return []
+	return data.filter(passenger => passenger.fields[property] === value);
 }
 
 // 3 -------------------------------------------------------------
@@ -45,7 +52,7 @@ const filterByProperty = (data, property, value) => {
 // given property have been removed
 
 const filterNullForProperty = (data, property) => {
-	return []
+	return data.filter(passenger => passenger.fields[property] !== undefined);
 }
 
 // 4 -------------------------------------------------------------
@@ -55,7 +62,9 @@ const filterNullForProperty = (data, property) => {
 // You need to remove any missing values because n + undefined = NaN!
 
 const sumAllProperty = (data, property) => {
-	return 0
+	return data
+    .filter(passenger => passenger.fields[property] !== undefined)
+    .reduce((acc, passenger) => acc + passenger.fields[property], 0);
 }
 
 
@@ -70,7 +79,15 @@ const sumAllProperty = (data, property) => {
 // at Cherbourg, 77 emabrked at Queenstown, and 2 are undedfined
 
 const countAllProperty = (data, property) => {
-	return {}
+	return data.reduce((acc, passenger) => {
+		const value = passenger.fields[property];
+		if (acc[value] !== undefined) {
+		  acc[value]++;
+		} else {
+		  acc[value] = 1;
+		}
+		return acc;
+	  }, {});
 }
 
 // Use reduce with an object as the starting accumulator! 
@@ -85,8 +102,34 @@ const countAllProperty = (data, property) => {
 // ages 0 - 10, 10 - 20, 20 - 30 etc. 
 
 const makeHistogram = (data, property, step) => {
-	return []
+	const values = data
+    	.map(record => record.fields[property])
+    	.filter(value => value !== undefined);
+
+  // If no valid values are found, return an empty array
+  	if (values.length === 0) {
+    	return [];
+  }
+
+		// Determine the minimum and maximum values
+		const minValue = Math.min(...values);
+		const maxValue = Math.max(...values);
+
+		// Determine the number of buckets needed
+		const numBuckets = Math.ceil((maxValue - minValue) / step);
+
+		// Initialize the histogram array with zeros
+		const histogram = Array.from({ length: numBuckets }, () => 0);
+
+		// Iterate through the values and increment the corresponding bucket
+		values.forEach(value => {
+		const bucketIndex = Math.floor((value - minValue) / step);
+		histogram[bucketIndex]++;
+		});
+
+		return histogram;
 }
+  
 
 // Note! There may not be no values for a particular step. For example
 // if we get passenger ages in increments of 5 there are 0 passengers in the 
@@ -105,7 +148,13 @@ const makeHistogram = (data, property, step) => {
 // to divide each value by the maximum value in the array.
 
 const normalizeProperty = (data, property) => {
-	return []
+	const values = data
+    .map(passenger => passenger.fields[property])
+    .filter(value => value !== undefined);
+
+  const max = Math.max(...values);
+
+  return values.map(value => value / max);
 }
 
 // Normalizing is an important process that can make many other
@@ -125,8 +174,22 @@ const normalizeProperty = (data, property) => {
 // would return ['male', 'female']
 
 const getUniqueValues = (data, property) => {
-	return []
+    // Create a Set to store unique values
+    const uniqueValues = new Set();
+
+    // Iterate over the dataset and add values for the specified property to the Set
+    data.forEach(record => {
+        const value = record.fields[property];
+        if (value !== undefined) {
+            // Convert the value to a string before adding it to the Set
+            uniqueValues.add(String(value));
+        }
+    });
+
+    // Convert the Set to an array and return
+    return Array.from(uniqueValues);
 }
+
 
 // There are a couple ways to do this. 
 // Use an object and add each value as a key. The value can be anything. 

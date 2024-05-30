@@ -52,7 +52,7 @@ describe("Challenge 2 Titanic", () => {
     );
   });
 
-  test.skip("Test filterByProperty", () => {
+  test("Test filterByProperty", () => {
     const allMale = data.filter((p) => p.fields.sex === "male");
     const allFemale = data.filter((p) => p.fields.sex === "female");
 
@@ -60,7 +60,7 @@ describe("Challenge 2 Titanic", () => {
     expect(index.filterByProperty(data, "sex", "female")).toEqual(allFemale);
   });
 
-  test.skip("Test filterNullForProperty", () => {
+  test("Test filterNullForProperty", () => {
     const faresNotNull = data.filter((p) => p.fields.fare !== undefined);
     const agesNotNull = data.filter((p) => p.fields.age !== undefined);
     const pclassNotNull = data.filter((p) => p.fields.pclass !== undefined);
@@ -70,7 +70,7 @@ describe("Challenge 2 Titanic", () => {
     expect(index.filterNullForProperty(data, "pclass")).toEqual(pclassNotNull);
   });
 
-  test.skip("Test sumAllProperty", () => {
+  test("Test sumAllProperty", () => {
     const sumAges = data.reduce(
       (acc, p) => (p.fields.age !== undefined ? acc + p.fields.age : acc),
       0
@@ -84,7 +84,7 @@ describe("Challenge 2 Titanic", () => {
     expect(index.sumAllProperty(data, "fare")).toBe(sumFares);
   });
 
-  test.skip("Test countAllProperty", () => {
+  test("Test countAllProperty", () => {
     const embarkedCounts = data.reduce((acc, p) => {
       if (acc[p.fields.embarked] === undefined) {
         acc[p.fields.embarked] = 1;
@@ -162,7 +162,7 @@ describe("Challenge 2 Titanic", () => {
     );
   });
 
-  test.skip("Test normalizeProperty", () => {
+  test("Test normalizeProperty", () => {
     const ages = data
       .filter((p) => p.fields.age !== undefined)
       .map((p) => p.fields.age);
@@ -177,7 +177,7 @@ describe("Challenge 2 Titanic", () => {
     expect(index.normalizeProperty(data, "fare")).toEqual(normalizedFares);
   });
 
-  test.skip("Test getUniqueValues", () => {
+  test("Test getUniqueValues", () => {
     expect(index.getUniqueValues(data, "pclass").sort()).toEqual(
       ["3", "2", "1"].sort()
     );
