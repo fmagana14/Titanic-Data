@@ -26,7 +26,7 @@
 
 const getAllValuesForProperty = (data, property) => {
     // Extract values for the specified property from each record and flatten the array
-    const values = data.map(record => record.fields[property]).filter(value => value !== undefined);
+    const values = data.map((record) => record.fields[property]);
 
     // Return the array of values
     return values;
@@ -102,33 +102,21 @@ const countAllProperty = (data, property) => {
 // ages 0 - 10, 10 - 20, 20 - 30 etc. 
 
 const makeHistogram = (data, property, step) => {
-	const values = data
-    	.map(record => record.fields[property])
-    	.filter(value => value !== undefined);
-
-  // If no valid values are found, return an empty array
-  	if (values.length === 0) {
-    	return [];
-  }
-
-		// Determine the minimum and maximum values
-		const minValue = Math.min(...values);
-		const maxValue = Math.max(...values);
-
-		// Determine the number of buckets needed
-		const numBuckets = Math.ceil((maxValue - minValue) / step);
-
-		// Initialize the histogram array with zeros
-		const histogram = Array.from({ length: numBuckets }, () => 0);
-
-		// Iterate through the values and increment the corresponding bucket
-		values.forEach(value => {
-		const bucketIndex = Math.floor((value - minValue) / step);
-		histogram[bucketIndex]++;
-		});
-
-		return histogram;
-}
+	const histogram = data.reduce((result, record) => {
+		const value = record.fields[property];
+		if (typeof value === "number") {
+		  const bucket = Math.floor(value / step);
+		  if (result[bucket]) {
+			result[bucket]++;
+		  } else {
+			result[bucket] = 1;
+		  }
+		}
+		return result;
+	  }, []);
+	
+	  return Array.from(histogram, (v) => v || 0);
+	};
   
 
 // Note! There may not be no values for a particular step. For example
